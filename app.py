@@ -1,43 +1,60 @@
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
+import plotly.io as pio
 import streamlit as st
 from scipy.integrate import quad
 
 st.set_page_config(page_title="Romberg y crisis energética", page_icon="🌊", layout="wide")
 
-AZUL, PASTEL, CELESTE, ACERO, MARINO = "#2F6FBF", "#8FB8E8", "#8ED3E6", "#5B7FA6", "#14284B"
+try:
+    DARK = st.context.theme.type == "dark"
+except Exception:
+    DARK = False
 
-st.markdown(
-    """
+if DARK:
+    P = dict(bg1="#0B1730", bg2="#0F2342", bg3="#0C2A3E", txt="#E6EEFA", head="#A8CCF7", side="#0F1F3D",
+             line="#27467A", h1="#17325F", h2="#1F4A82", h3="#1B5A78", hsh="#0A1830", card="#12274A",
+             badge="#4C8DDB", bsh="#2B5F9E", tabsel="#2F6FBF", diag="#27467A", diagtxt="#FFFFFF")
+    AZUL, PASTEL, CELESTE, ACERO = "#5BA3F0", "#8FB8E8", "#8ED3E6", "#A9BEDA"
+else:
+    P = dict(bg1="#F2F8FF", bg2="#E8F1FC", bg3="#EAF7FB", txt="#14284B", head="#1B3A6B", side="#E3EEFB",
+             line="#CFE0F5", h1="#BFD9F5", h2="#9EC1EA", h3="#C9ECF5", hsh="#8DB0DB", card="#FFFFFF",
+             badge="#1F4E8C", bsh="#143A6B", tabsel="#1F4E8C", diag="#CFE0F5", diagtxt="#14284B")
+    AZUL, PASTEL, CELESTE, ACERO = "#2F6FBF", "#8FB8E8", "#8ED3E6", "#5B7FA6"
+TXT, PLOTBG = P["txt"], P["card"]
+pio.templates.default = "plotly_dark" if DARK else "plotly_white"
+
+CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;600;700&display=swap');
-.stApp {font-family:'Quicksand',sans-serif; color:#14284B;
-  background:linear-gradient(180deg,#F2F8FF 0%,#E8F1FC 55%,#EAF7FB 100%);}
-h1,h2,h3,h4 {font-family:'Fredoka',sans-serif !important; color:#1B3A6B;}
-[data-testid="stSidebar"] {background:#E3EEFB; border-right:3px dashed #A9C6EA;}
-.hero {background:linear-gradient(120deg,#BFD9F5,#9EC1EA 60%,#C9ECF5); border-radius:32px;
-  padding:28px 34px; margin-bottom:18px; box-shadow:0 8px 0 #8DB0DB;}
+.stApp {font-family:'Quicksand',sans-serif; color:@txt@;
+  background:linear-gradient(180deg,@bg1@ 0%,@bg2@ 55%,@bg3@ 100%);}
+h1,h2,h3,h4 {font-family:'Fredoka',sans-serif !important; color:@head@;}
+[data-testid="stSidebar"] {background:@side@; border-right:3px dashed @line@;}
+.hero {background:linear-gradient(120deg,@h1@,@h2@ 60%,@h3@); border-radius:32px;
+  padding:28px 34px; margin-bottom:18px; box-shadow:0 8px 0 @hsh@; color:@txt@;}
 .hero h1 {margin:0; font-size:2.3rem;}
 .hero p {margin:6px 0 0 0; font-size:1.05rem;}
-.chip {display:inline-block; background:#fff; border-radius:999px; padding:4px 14px; margin:8px 6px 0 0;
-  border:2px solid #A9C6EA; font-weight:700; font-size:.85rem;}
-.card {background:#fff; border-radius:24px; padding:16px 22px; border:2px solid #CFE0F5;
-  box-shadow:0 6px 0 #CFE0F5; margin:10px 0;}
-.step {font-family:'Fredoka',sans-serif; font-size:1.35rem; color:#1B3A6B; margin:26px 0 6px 0;}
+.chip {display:inline-block; background:@card@; border-radius:999px; padding:4px 14px; margin:8px 6px 0 0;
+  border:2px solid @line@; font-weight:700; font-size:.85rem; color:@txt@;}
+.card {background:@card@; border-radius:24px; padding:16px 22px; border:2px solid @line@;
+  box-shadow:0 6px 0 @line@; margin:10px 0; color:@txt@;}
+.step {font-family:'Fredoka',sans-serif; font-size:1.35rem; color:@head@; margin:26px 0 6px 0;}
 .badge {display:inline-block; width:36px; height:36px; line-height:36px; text-align:center;
-  background:#1F4E8C; color:#fff; border-radius:50%; margin-right:10px; box-shadow:0 3px 0 #143A6B;}
-.stTabs [data-baseweb="tab"] {background:#fff; border-radius:999px; padding:8px 18px; margin-right:6px;
-  border:2px solid #C5DAF2;}
-.stTabs [aria-selected="true"] {background:#1F4E8C; border-color:#1F4E8C;}
+  background:@badge@; color:#fff; border-radius:50%; margin-right:10px; box-shadow:0 3px 0 @bsh@;}
+.stTabs [data-baseweb="tab"] {background:@card@; border-radius:999px; padding:8px 18px; margin-right:6px;
+  border:2px solid @line@;}
+.stTabs [aria-selected="true"] {background:@tabsel@; border-color:@tabsel@;}
 .stTabs [aria-selected="true"] p {color:#fff;}
 .stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {display:none;}
-[data-testid="stMetric"] {background:#fff; border-radius:22px; padding:14px 18px;
-  border:2px solid #CFE0F5; box-shadow:0 5px 0 #CFE0F5;}
+[data-testid="stMetric"] {background:@card@; border-radius:22px; padding:14px 18px;
+  border:2px solid @line@; box-shadow:0 5px 0 @line@;}
 </style>
-""",
-    unsafe_allow_html=True,
-)
+"""
+for k, v in P.items():
+    CSS = CSS.replace(f"@{k}@", v)
+st.markdown(CSS, unsafe_allow_html=True)
 
 
 # ---------------------------------------------------------------- núcleo numérico
@@ -155,7 +172,7 @@ with tabs[1]:
         fig.add_trace(go.Scatter(x=xw, y=dem(xw), fill="tozeroy", fillcolor="rgba(142,211,230,.45)", name="Energía a integrar", line=dict(width=0)))
     fig.add_trace(go.Scatter(x=tf, y=dem(tf), name="Demanda D(t)", line=dict(color=AZUL, width=4)))
     fig.update_layout(height=380, xaxis_title="Hora del día", yaxis_title="MW", paper_bgcolor="rgba(0,0,0,0)",
-                      plot_bgcolor="#fff", legend=dict(orientation="h", y=1.12), font=dict(color=MARINO))
+                      plot_bgcolor=PLOTBG, legend=dict(orientation="h", y=1.12), font=dict(color=TXT))
     st.plotly_chart(fig)
 
     if deficit and modo == "Modelo con parámetros" and np.any(dem(xw) < G):
@@ -212,10 +229,10 @@ with tabs[2]:
         xx = np.linspace(a, b, 300)
         fg = go.Figure()
         fg.add_trace(go.Scatter(x=xs, y=f(xs), fill="tozeroy", fillcolor="rgba(143,184,232,.35)", mode="lines+markers",
-                                line=dict(color=PASTEL, width=2), marker=dict(size=8, color=CELESTE, line=dict(width=1, color=MARINO)), name=f"{m} trapecio(s)"))
+                                line=dict(color=PASTEL, width=2), marker=dict(size=8, color=CELESTE, line=dict(width=1, color=TXT)), name=f"{m} trapecio(s)"))
         fg.add_trace(go.Scatter(x=xx, y=f(xx), line=dict(color=AZUL, width=3), name="f(t)"))
-        fg.update_layout(height=300, margin=dict(t=30, b=30), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fff",
-                         title=f"Nivel {k}: {m} trapecio(s), h = {(b - a) / m:g}", font=dict(color=MARINO), legend=dict(orientation="h", y=-0.2))
+        fg.update_layout(height=300, margin=dict(t=30, b=30), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor=PLOTBG,
+                         title=f"Nivel {k}: {m} trapecio(s), h = {(b - a) / m:g}", font=dict(color=TXT), legend=dict(orientation="h", y=-0.2))
         return fg
 
     st.plotly_chart(fig_trap(1))
@@ -257,7 +274,7 @@ with tabs[2]:
         index=[f"k={k + 1} (h={(b - a) / 2**k:g})" for k in range(n)],
     )
     diag = lambda d: pd.DataFrame(
-        [[f"background-color:#CFE0F5;font-weight:700" if i == j else "" for j in range(d.shape[1])] for i in range(d.shape[0])],
+        [[f"background-color:{P['diag']};color:{P['diagtxt']};font-weight:700" if i == j else "" for j in range(d.shape[1])] for i in range(d.shape[0])],
         index=d.index, columns=d.columns)
     st.dataframe(tab.style.apply(diag, axis=None))
     st.caption("La diagonal (azul) es la mejor aproximación de cada nivel.")
@@ -299,7 +316,7 @@ with tabs[3]:
         fg.add_trace(go.Scatter(x=ks, y=np.maximum(np.abs(R[:, 0] - exact), 1e-16), name="Error del trapecio", mode="lines+markers", line=dict(color=ACERO, width=3)))
         fg.add_trace(go.Scatter(x=ks, y=np.maximum(np.abs(np.diag(R) - exact), 1e-16), name="Error de Romberg", mode="lines+markers", line=dict(color=AZUL, width=3)))
     fg.update_layout(height=360, yaxis_type="log", xaxis_title="Nivel k", yaxis_title="Error (MWh, escala log)",
-                     paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fff", font=dict(color=MARINO), legend=dict(orientation="h", y=1.15))
+                     paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor=PLOTBG, font=dict(color=TXT), legend=dict(orientation="h", y=1.15))
     st.plotly_chart(fg)
     card("💡 <b>Lectura:</b> el error del trapecio baja lento, mientras que el de Romberg cae varios órdenes de magnitud en pocos niveles. "
          "Esa es la ganancia de la extrapolación.")

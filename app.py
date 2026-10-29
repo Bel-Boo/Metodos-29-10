@@ -4,36 +4,36 @@ import plotly.graph_objects as go
 import streamlit as st
 from scipy.integrate import quad
 
-st.set_page_config(page_title="Romberg y crisis energética", page_icon="🌸", layout="wide")
+st.set_page_config(page_title="Romberg y crisis energética", page_icon="🌊", layout="wide")
 
-ROSA, LILA, MENTA, DURAZNO, TINTA = "#FF8FB1", "#B9A6F5", "#7FD8B8", "#FFC9A8", "#4A3F5C"
+AZUL, PASTEL, CELESTE, ACERO, MARINO = "#2F6FBF", "#8FB8E8", "#8ED3E6", "#5B7FA6", "#14284B"
 
 st.markdown(
     """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Quicksand:wght@500;600;700&display=swap');
-.stApp {font-family:'Quicksand',sans-serif; color:#4A3F5C;
-  background:linear-gradient(180deg,#FFF3F8 0%,#F6F0FF 55%,#EEFBF5 100%);}
-h1,h2,h3,h4 {font-family:'Fredoka',sans-serif !important; color:#5B4B8A;}
-[data-testid="stSidebar"] {background:#FFE9F2; border-right:3px dashed #FFB6D0;}
-.hero {background:linear-gradient(120deg,#FFC9DD,#D9CCFF 60%,#C5F2E2); border-radius:32px;
-  padding:28px 34px; margin-bottom:18px; box-shadow:0 8px 0 #F2B8D0;}
+.stApp {font-family:'Quicksand',sans-serif; color:#14284B;
+  background:linear-gradient(180deg,#F2F8FF 0%,#E8F1FC 55%,#EAF7FB 100%);}
+h1,h2,h3,h4 {font-family:'Fredoka',sans-serif !important; color:#1B3A6B;}
+[data-testid="stSidebar"] {background:#E3EEFB; border-right:3px dashed #A9C6EA;}
+.hero {background:linear-gradient(120deg,#BFD9F5,#9EC1EA 60%,#C9ECF5); border-radius:32px;
+  padding:28px 34px; margin-bottom:18px; box-shadow:0 8px 0 #8DB0DB;}
 .hero h1 {margin:0; font-size:2.3rem;}
 .hero p {margin:6px 0 0 0; font-size:1.05rem;}
 .chip {display:inline-block; background:#fff; border-radius:999px; padding:4px 14px; margin:8px 6px 0 0;
-  border:2px solid #FFB6D0; font-weight:700; font-size:.85rem;}
-.card {background:#fff; border-radius:24px; padding:16px 22px; border:2px solid #E4D9FF;
-  box-shadow:0 6px 0 #E4D9FF; margin:10px 0;}
-.step {font-family:'Fredoka',sans-serif; font-size:1.35rem; color:#5B4B8A; margin:26px 0 6px 0;}
+  border:2px solid #A9C6EA; font-weight:700; font-size:.85rem;}
+.card {background:#fff; border-radius:24px; padding:16px 22px; border:2px solid #CFE0F5;
+  box-shadow:0 6px 0 #CFE0F5; margin:10px 0;}
+.step {font-family:'Fredoka',sans-serif; font-size:1.35rem; color:#1B3A6B; margin:26px 0 6px 0;}
 .badge {display:inline-block; width:36px; height:36px; line-height:36px; text-align:center;
-  background:#FF8FB1; color:#fff; border-radius:50%; margin-right:10px; box-shadow:0 3px 0 #E06A94;}
+  background:#1F4E8C; color:#fff; border-radius:50%; margin-right:10px; box-shadow:0 3px 0 #143A6B;}
 .stTabs [data-baseweb="tab"] {background:#fff; border-radius:999px; padding:8px 18px; margin-right:6px;
-  border:2px solid #FFD3E3;}
-.stTabs [aria-selected="true"] {background:#FF8FB1; border-color:#FF8FB1;}
+  border:2px solid #C5DAF2;}
+.stTabs [aria-selected="true"] {background:#1F4E8C; border-color:#1F4E8C;}
 .stTabs [aria-selected="true"] p {color:#fff;}
 .stTabs [data-baseweb="tab-highlight"], .stTabs [data-baseweb="tab-border"] {display:none;}
 [data-testid="stMetric"] {background:#fff; border-radius:22px; padding:14px 18px;
-  border:2px solid #E4D9FF; box-shadow:0 5px 0 #E4D9FF;}
+  border:2px solid #CFE0F5; box-shadow:0 5px 0 #CFE0F5;}
 </style>
 """,
     unsafe_allow_html=True,
@@ -65,7 +65,7 @@ def card(html):
 
 # ---------------------------------------------------------------- barra lateral
 with st.sidebar:
-    st.markdown("### 🎀 Panel de datos")
+    st.markdown("### 🎛️ Panel de datos")
     modo = st.radio("Fuente de datos", ["Modelo con parámetros", "Tabla editable"])
     if modo == "Modelo con parámetros":
         objetivo = st.radio("¿Qué quieres calcular?", ["Energía no suministrada", "Energía total demandada"])
@@ -116,7 +116,7 @@ deficit = objetivo == "Energía no suministrada"
 st.markdown(
     """
 <div class="hero">
-<h1>⚡ Romberg frente a la crisis energética 🌸</h1>
+<h1>⚡ Romberg frente a la crisis energética 🌊</h1>
 <p>Un ejercicio de Ingeniería de Sistemas: ¿cuánta energía le va a faltar a la ciudad y cuánto cuesta ese apagón?</p>
 <span class="chip">Integración numérica</span><span class="chip">Extrapolación de Richardson</span>
 <span class="chip">Fiabilidad de sistemas</span><span class="chip">Datos editables</span>
@@ -125,7 +125,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-tabs = st.tabs(["🌷 Contexto", "📝 Datos", "🧮 Paso a paso", "📊 Resultados", "🧠 Modelos aplicables"])
+tabs = st.tabs(["🌊 Contexto", "📝 Datos", "🧮 Paso a paso", "📊 Resultados", "🧠 Modelos aplicables"])
 
 # ---------------------------------------------------------------- datos
 with tabs[1]:
@@ -146,16 +146,16 @@ with tabs[1]:
 
     tf = np.linspace(0, 24, 400)
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=tf, y=np.full_like(tf, G), name="Oferta disponible", line=dict(color=LILA, dash="dash", width=3)))
+    fig.add_trace(go.Scatter(x=tf, y=np.full_like(tf, G), name="Oferta disponible", line=dict(color=PASTEL, dash="dash", width=3)))
     xw = np.linspace(a, b, 200)
     if deficit:
         fig.add_trace(go.Scatter(x=xw, y=np.full_like(xw, G), showlegend=False, line=dict(width=0)))
-        fig.add_trace(go.Scatter(x=xw, y=dem(xw), fill="tonexty", fillcolor="rgba(127,216,184,.55)", name="Energía no suministrada", line=dict(width=0)))
+        fig.add_trace(go.Scatter(x=xw, y=dem(xw), fill="tonexty", fillcolor="rgba(142,211,230,.55)", name="Energía no suministrada", line=dict(width=0)))
     else:
-        fig.add_trace(go.Scatter(x=xw, y=dem(xw), fill="tozeroy", fillcolor="rgba(127,216,184,.45)", name="Energía a integrar", line=dict(width=0)))
-    fig.add_trace(go.Scatter(x=tf, y=dem(tf), name="Demanda D(t)", line=dict(color=ROSA, width=4)))
+        fig.add_trace(go.Scatter(x=xw, y=dem(xw), fill="tozeroy", fillcolor="rgba(142,211,230,.45)", name="Energía a integrar", line=dict(width=0)))
+    fig.add_trace(go.Scatter(x=tf, y=dem(tf), name="Demanda D(t)", line=dict(color=AZUL, width=4)))
     fig.update_layout(height=380, xaxis_title="Hora del día", yaxis_title="MW", paper_bgcolor="rgba(0,0,0,0)",
-                      plot_bgcolor="#fff", legend=dict(orientation="h", y=1.12), font=dict(color=TINTA))
+                      plot_bgcolor="#fff", legend=dict(orientation="h", y=1.12), font=dict(color=MARINO))
     st.plotly_chart(fig)
 
     if deficit and modo == "Modelo con parámetros" and np.any(dem(xw) < G):
@@ -183,7 +183,7 @@ with tabs[0]:
     st.markdown("La energía es el área bajo la curva de potencia, es decir, una integral:")
     st.latex(r"\text{ENS}=\int_a^b \big(D(t)-G\big)\,dt \qquad [\text{MW}\cdot\text{h}=\text{MWh}]")
     card(
-        "🌸 <b>¿Por qué Romberg?</b> La curva de demanda es suave, justo el caso donde Romberg brilla: "
+        "💡 <b>¿Por qué Romberg?</b> La curva de demanda es suave, justo el caso donde Romberg brilla: "
         "con pocas evaluaciones de la función logra una precisión que el trapecio simple tardaría miles de pasos en alcanzar. "
         "Si cada evaluación fuese una simulación costosa del sistema eléctrico, eso ahorra mucho tiempo."
     )
@@ -211,11 +211,11 @@ with tabs[2]:
         xs = np.linspace(a, b, m + 1)
         xx = np.linspace(a, b, 300)
         fg = go.Figure()
-        fg.add_trace(go.Scatter(x=xs, y=f(xs), fill="tozeroy", fillcolor="rgba(185,166,245,.35)", mode="lines+markers",
-                                line=dict(color=LILA, width=2), marker=dict(size=8, color=MENTA, line=dict(width=1, color=TINTA)), name=f"{m} trapecio(s)"))
-        fg.add_trace(go.Scatter(x=xx, y=f(xx), line=dict(color=ROSA, width=3), name="f(t)"))
+        fg.add_trace(go.Scatter(x=xs, y=f(xs), fill="tozeroy", fillcolor="rgba(143,184,232,.35)", mode="lines+markers",
+                                line=dict(color=PASTEL, width=2), marker=dict(size=8, color=CELESTE, line=dict(width=1, color=MARINO)), name=f"{m} trapecio(s)"))
+        fg.add_trace(go.Scatter(x=xx, y=f(xx), line=dict(color=AZUL, width=3), name="f(t)"))
         fg.update_layout(height=300, margin=dict(t=30, b=30), paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fff",
-                         title=f"Nivel {k}: {m} trapecio(s), h = {(b - a) / m:g}", font=dict(color=TINTA), legend=dict(orientation="h", y=-0.2))
+                         title=f"Nivel {k}: {m} trapecio(s), h = {(b - a) / m:g}", font=dict(color=MARINO), legend=dict(orientation="h", y=-0.2))
         return fg
 
     st.plotly_chart(fig_trap(1))
@@ -257,10 +257,10 @@ with tabs[2]:
         index=[f"k={k + 1} (h={(b - a) / 2**k:g})" for k in range(n)],
     )
     diag = lambda d: pd.DataFrame(
-        [[f"background-color:#FFD3E3;font-weight:700" if i == j else "" for j in range(d.shape[1])] for i in range(d.shape[0])],
+        [[f"background-color:#CFE0F5;font-weight:700" if i == j else "" for j in range(d.shape[1])] for i in range(d.shape[0])],
         index=d.index, columns=d.columns)
     st.dataframe(tab.style.apply(diag, axis=None))
-    st.caption("La diagonal (rosa) es la mejor aproximación de cada nivel.")
+    st.caption("La diagonal (azul) es la mejor aproximación de cada nivel.")
 
     step(7, "Criterio de parada")
     st.latex(rf"|R_{{k,k}}-R_{{k-1,k-1}}|<{tol:.0e}\ \text{{MWh}}")
@@ -294,14 +294,14 @@ with tabs[3]:
     ks = np.arange(1, n + 1)
     fg = go.Figure()
     est = [np.nan] + [max(abs(R[k, k] - R[k - 1, k - 1]), 1e-16) for k in range(1, n)]
-    fg.add_trace(go.Scatter(x=ks, y=est, name="Error estimado (diagonal)", mode="lines+markers", line=dict(color=LILA, width=3)))
+    fg.add_trace(go.Scatter(x=ks, y=est, name="Error estimado (diagonal)", mode="lines+markers", line=dict(color=PASTEL, width=3)))
     if exact is not None:
-        fg.add_trace(go.Scatter(x=ks, y=np.maximum(np.abs(R[:, 0] - exact), 1e-16), name="Error del trapecio", mode="lines+markers", line=dict(color=DURAZNO, width=3)))
-        fg.add_trace(go.Scatter(x=ks, y=np.maximum(np.abs(np.diag(R) - exact), 1e-16), name="Error de Romberg", mode="lines+markers", line=dict(color=ROSA, width=3)))
+        fg.add_trace(go.Scatter(x=ks, y=np.maximum(np.abs(R[:, 0] - exact), 1e-16), name="Error del trapecio", mode="lines+markers", line=dict(color=ACERO, width=3)))
+        fg.add_trace(go.Scatter(x=ks, y=np.maximum(np.abs(np.diag(R) - exact), 1e-16), name="Error de Romberg", mode="lines+markers", line=dict(color=AZUL, width=3)))
     fg.update_layout(height=360, yaxis_type="log", xaxis_title="Nivel k", yaxis_title="Error (MWh, escala log)",
-                     paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fff", font=dict(color=TINTA), legend=dict(orientation="h", y=1.15))
+                     paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="#fff", font=dict(color=MARINO), legend=dict(orientation="h", y=1.15))
     st.plotly_chart(fg)
-    card("🌸 <b>Lectura:</b> el error del trapecio baja lento, mientras que el de Romberg cae varios órdenes de magnitud en pocos niveles. "
+    card("💡 <b>Lectura:</b> el error del trapecio baja lento, mientras que el de Romberg cae varios órdenes de magnitud en pocos niveles. "
          "Esa es la ganancia de la extrapolación.")
     if deficit:
         st.markdown(f"**Decisión de ingeniería:** el apagón costaría unos **USD {best * voll:,.0f}** frente a **USD {best * tarifa:,.0f}** "
